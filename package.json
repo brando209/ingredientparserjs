@@ -1,0 +1,19 @@
+{
+  "name": "ingredient_parser",
+  "version": "1.0.0",
+  "description": "Parses ingredient strings to extract the ingredient name, measurement details, and more. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "npm",
+    "ingredient",
+    "parser"
+  ],
+  "author": "Branden McCarthy",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  }
+}
