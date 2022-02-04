@@ -53,11 +53,11 @@ function extractMeasurement(ingredientString) {
     //If the unit is 'bag', 'box', 'can', or 'package', it may come with a second measurement that gives the size
     //of the package(Ex: '1 (8 oz.) can of tomato paste' or '2 cans of tomato paste (8oz)'. Check this first and move second
     //measurement to the end of the string.
-    const packageRegex = /bags?|boxe?s?|cans?|packages?|pkgs?/
+    const packageRegex = /bags?|boxe?s?|cans?|packages?|pkgs?.?/i
     const packageMatch = ingredientStringWithoutQuantity.match(packageRegex);
     if(packageMatch) {
         ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.slice(packageMatch.index + packageMatch[0].length).trim() + " " + ingredientStringWithoutQuantityAndUnit.slice(0, packageMatch.index).trim();
-        measurement.unit = unitMap.get(packageMatch[0]);
+        measurement.unit = unitMap.get(packageMatch[0].replace(".", "").toLowerCase().trim());
     }
 
     let unitStringLength = 0; //Length of measurement unit portion of string
@@ -67,7 +67,7 @@ function extractMeasurement(ingredientString) {
     const unitMatch = ingredientStringWithoutQuantity.match(unitRegex);
     if(unitMatch) {
         unitStringLength = unitMatch[0].length;
-        measurement.unit = unitMap.get(unitMatch[1]);
+        measurement.unit = unitMap.get(unitMatch[1].replace(".", "").toLowerCase().trim());
     }
     
     ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.substring(unitStringLength).trim();
