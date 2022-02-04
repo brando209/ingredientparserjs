@@ -9,7 +9,7 @@ function toNumberFromString(numberString) {
 
     if(numerator === NaN || denominator === NaN) return NaN;
 
-    return numerator / denominator; 
+    return Number((numerator / denominator).toFixed(3)); 
 }
 
 module.exports = {
