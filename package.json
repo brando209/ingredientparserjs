@@ -1,5 +1,5 @@
 {
-  "name": "ingredient_parser",
+  "name": "ingredientparserjs",
   "version": "1.0.0",
   "description": "Parses ingredient strings to extract the ingredient name, measurement details, and more. ",
   "main": "index.js",
