@@ -1,4 +1,4 @@
-const parse = require('../index');
+const { parse } = require('../index');
 
 test('Returns an object with the correct properties', () => {
     const result = parse('1 cup water');
