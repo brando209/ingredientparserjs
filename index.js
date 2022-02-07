@@ -69,7 +69,7 @@ function extractMeasurement(ingredientString) {
         unitStringLength = unitMatch[0].length;
         measurement.unit = unitMap.get(unitMatch[1].replace(".", "").toLowerCase().trim());
     }
-    
+
     ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.substring(unitStringLength).trim();
 
     return [measurement, ingredientStringWithoutQuantityAndUnit]
@@ -100,4 +100,4 @@ function parse(ingredientString) {
     return result;
 }
 
-module.exports = parse;
+exports.parse = parse;

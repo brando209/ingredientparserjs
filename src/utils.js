@@ -12,6 +12,4 @@ function toNumberFromString(numberString) {
     return Number((numerator / denominator).toFixed(3)); 
 }
 
-module.exports = {
-    toNumberFromString
-}
+module.exports = { toNumberFromString };

@@ -65,4 +65,4 @@ for (let unit in units) {
     }
 }
 
-module.exports = { unitMap, units, pluralUnits };
+module.exports = { unitMap };
