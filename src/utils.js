@@ -12,4 +12,28 @@ function toNumberFromString(numberString) {
     return Number((numerator / denominator).toFixed(3)); 
 }
 
-module.exports = { toNumberFromString };
+const convertUnicodeFraction = (string) => {
+    const unicodeFractionRegex = /[\u00BC-\u00BE\u2150-\u215E]/
+    const unicodeFraction = string.match(unicodeFractionRegex);
+
+    if(unicodeFraction) {
+        const unicode = unicodeFraction[0];
+        const normalized = unicode.normalize('NFKC')
+        const updatedString = string.replace(unicode, normalized)
+        return cleanString(updatedString);
+    }
+    return cleanString(string);
+}
+
+const cleanString = (string) => {
+    const cleaned = string
+        .replace(/&nbsp;/g, ' ') //TODO: Consider other HTML Entities
+        .replace('⁄', '/') //TODO: Account for all characters slash-like
+        .replace(' ', " ") //TODO: Account for all characters space-like
+        .replace('–', '-') //TODO: Account for all characters dash-like
+
+    return cleaned;
+} 
+
+
+module.exports = { toNumberFromString, convertUnicodeFraction };
