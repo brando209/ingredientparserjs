@@ -29,7 +29,14 @@ function extractMeasurement(ingredientString) {
         isRange: false
     }
 
+    //Pre-process string
     ingredientString = convertUnicodeFraction(ingredientString);
+    //If there is a slash directly preceeded by a non-digit, assume it is a measurement conversion and add a
+    //space before the slash. Ex: '28g/1oz flour' becomes '28g /1oz flour'.
+    ingredientString = ingredientString.replace(/(?<!\d)\//, ' /');
+    //If there is an opening parens immediately proceeded by a digit and immediately preceeded by a non-digit,
+    //assume it is a measurement conversion. Ex: '28g(1oz) flour' becomes '28g (1oz) flour'.
+    ingredientString = ingredientString.replace(/(?<!\d)\((?=\d)/, ' (');
 
     //Extract the measurement quantity. Assumes measurement is at start of string.
     //If quantity is a range, assumes it to be structured like: '1-2' or '1 to 2' (may include whitespace in between)

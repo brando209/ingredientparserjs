@@ -243,20 +243,27 @@ describe('Correctly extracts the ingredient measurements', () => {
     describe('Conversion',  () => {
         test('Converted measurement is whole number', () => {
             expect(parse('1 cup (4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
+            expect(parse('1 cup(4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
             expect(parse('1 ounce / 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
             expect(parse('1 ounce /28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
-            //TODO: Unit is not found when something comes immediately after
-            // expect(parse('1 cup(4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
-            // expect(parse('1 ounce/ 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
-            // expect(parse('1 ounce/28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
+            expect(parse('1 ounce/ 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
+            expect(parse('1 ounce/28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
         });
         test('Converted measurement is fraction', () => {
             expect(parse('14 g. (1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g.(1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
             expect(parse('14 g. / 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g. /1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g./ 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g./1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
         });
         test('Converted measurement is whole number and fraction', () => {
-            expect(parse('35 g. / 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
             expect(parse('35 g. (1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g.(1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. / 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. /1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./ 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
         });
     });
 });
