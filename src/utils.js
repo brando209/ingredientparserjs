@@ -1,3 +1,9 @@
+const unicodeFractionRegex = /[\u00BC-\u00BE\u2150-\u215E]/g;
+const unicodeSpaceRegex = /[\u00a0\u1680\u2002-\u200b\u202f\u205f\u3000\ufeff]/g;
+const unicodeSlashRegex = /[\u0337\u0338\u2044\u2215\uff0f]/g;
+const unicodeDashRegex = /[\u00ad\u058a\u2010\u2011\u2043\u207b\u208b\ufe63\uff0d\u2012-\u2015\u2e3a\u2e3b\ufe58\u02d7\u2212\u2796\ufe63\uff0d]/g;
+const htmlEntitiesRegex = /&(nbsp|lt|gt|amp|quot|apos|copy|reg);/g;
+
 //Accepts a string that contains only numbers and possibly a single slash('/') and returns the value as a number
 //Ex: toNumberString('2') => 2
 //Ex: toNumberString('1/2') => 0.5
@@ -13,7 +19,6 @@ function toNumberFromString(numberString) {
 }
 
 function convertUnicodeFractions(string) {
-    const unicodeFractionRegex = /[\u00BC-\u00BE\u2150-\u215E]/g;
     const unicodeFractions = string.matchAll(unicodeFractionRegex);
     let convertedString = string;
     
@@ -28,13 +33,21 @@ function convertUnicodeFractions(string) {
 }
 
 function cleanString(string) {
-    const cleaned = string
-        .replace(/&nbsp;/g, ' ') //TODO: Consider other HTML Entities
-        .replace(/⁄/g, '/') //TODO: Account for all characters slash-like
-        .replace(/ /g, " ") //TODO: Account for all characters space-like
-        .replace(/–/g, '-') //TODO: Account for all characters dash-like
-
-    return cleaned;
+    const htmlEntityConverstion = {
+        '&nbsp;': " ",
+        '&lt;': '<',
+        '&gt;': '>',
+        '&amp;': '&',
+        '&quot;': '"',
+        '&apos;': "'",
+        '&copy;': '©',
+        '&reg;': '®',
+    };
+    return string
+        .replace(unicodeSlashRegex, '/')
+        .replace(unicodeSpaceRegex, " ")
+        .replace(unicodeDashRegex, '-')
+        .replace(htmlEntitiesRegex, match => htmlEntityConverstion[match]);
 }
 
 module.exports = { toNumberFromString, convertUnicodeFractions, cleanString };
