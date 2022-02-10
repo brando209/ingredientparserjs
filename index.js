@@ -142,6 +142,4 @@ function parse(ingredientString) {
     return result;
 }
 
-parse('¼ cup cheese');
-
 exports.parse = parse;
