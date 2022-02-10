@@ -1,5 +1,5 @@
 const { unitMap } = require('./src/units');
-const { toNumberFromString, convertUnicodeFraction } = require('./src/utils');
+const { toNumberFromString, convertUnicodeFractions } = require('./src/utils');
 /*
     Extracts measurement information from an ingredient string.
     Assumes that the string has the forms:
@@ -30,7 +30,7 @@ function extractMeasurement(ingredientString) {
     }
 
     //Pre-process string
-    ingredientString = convertUnicodeFraction(ingredientString);
+    ingredientString = convertUnicodeFractions(ingredientString);
     //If there is a slash directly preceeded by a non-digit, assume it is a measurement conversion and add a
     //space before the slash. Ex: '28g/1oz flour' becomes '28g /1oz flour'.
     ingredientString = ingredientString.replace(/(?<!\d)\//, ' /');
@@ -141,5 +141,7 @@ function parse(ingredientString) {
 
     return result;
 }
+
+parse('¼ cup cheese');
 
 exports.parse = parse;
