@@ -64,6 +64,27 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 1/8 - 1 1/4 oz. cheese')).toHaveProperty('measurement.quantity', [1.125, 1.25]);
             expect(parse('2 1/8- 3 2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
         });
+
+        test('Quantity is a unicode fraction', () => {
+            expect(parse('½ cup cheese')).toHaveProperty('measurement.quantity', 0.5);
+            expect(parse('⅓ cup cheese')).toHaveProperty('measurement.quantity', 0.333);
+            expect(parse('⅔ cup cheese')).toHaveProperty('measurement.quantity', 0.667);
+            expect(parse('¼ cup cheese')).toHaveProperty('measurement.quantity', 0.25);
+            expect(parse('¾ cup cheese')).toHaveProperty('measurement.quantity', 0.75);
+            expect(parse('⅕ cup cheese')).toHaveProperty('measurement.quantity', 0.2);
+            expect(parse('⅖ cup cheese')).toHaveProperty('measurement.quantity', 0.4);
+            expect(parse('⅗ cup cheese')).toHaveProperty('measurement.quantity', 0.6);
+            expect(parse('⅘ cup cheese')).toHaveProperty('measurement.quantity', 0.8);
+            expect(parse('⅙ cup cheese')).toHaveProperty('measurement.quantity', 0.167);
+            expect(parse('⅚ cup cheese')).toHaveProperty('measurement.quantity', 0.833);
+            expect(parse('⅐ cup cheese')).toHaveProperty('measurement.quantity', 0.143);
+            expect(parse('⅛ cup cheese')).toHaveProperty('measurement.quantity', 0.125);
+            expect(parse('⅜ cup cheese')).toHaveProperty('measurement.quantity', 0.375);
+            expect(parse('⅝ cup cheese')).toHaveProperty('measurement.quantity', 0.625);
+            expect(parse('⅞ cup cheese')).toHaveProperty('measurement.quantity', 0.875);
+            expect(parse('⅑ cup cheese')).toHaveProperty('measurement.quantity', 0.111);
+            expect(parse('⅒ cup cheese')).toHaveProperty('measurement.quantity', 0.1);
+        });
     });
 
 
