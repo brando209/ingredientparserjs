@@ -33,14 +33,13 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('3 1/4 oz. cheese')).toHaveProperty('measurement.quantity', 3.25);
             expect(parse('3 1/8 tsp salt')).toHaveProperty('measurement.quantity', 3.125);
         });
-        //TODO: Add support for measurement quantity as a decimal
-        // test('Quantity is a decimal', () => {
-        //     expect(parse('1.5 cup of water')).toHaveProperty('measurement.quantity', 1.5);
-        //     expect(parse('1.3 cup of water')).toHaveProperty('measurement.quantity', 1.3);
-        //     expect(parse('2.6 cup of water')).toHaveProperty('measurement.quantity', 2.6);
-        //     expect(parse('3.25 oz. cheese')).toHaveProperty('measurement.quantity', 3.25);
-        //     expect(parse('3.125 tsp salt')).toHaveProperty('measurement.quantity', 3.125);
-        // });
+        test('Quantity is a decimal', () => {
+            expect(parse('1.5 cup of water')).toHaveProperty('measurement.quantity', 1.5);
+            expect(parse('1.3 cup of water')).toHaveProperty('measurement.quantity', 1.3);
+            expect(parse('2.6 cup of water')).toHaveProperty('measurement.quantity', 2.6);
+            expect(parse('3.25 oz. cheese')).toHaveProperty('measurement.quantity', 3.25);
+            expect(parse('3.125 tsp salt')).toHaveProperty('measurement.quantity', 3.125);
+        });
         test('Quantity is a range with whole numbers', () => {
             expect(parse('1-2 cups of water')).toHaveProperty('measurement.quantity', [1, 2]);
             expect(parse('1 to 2 cups of water')).toHaveProperty('measurement.quantity', [1, 2]);
@@ -55,8 +54,13 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1/8-1/4 oz. cheese')).toHaveProperty('measurement.quantity', [0.125, 0.25]);
             expect(parse('1/8-2/3 tsp salt')).toHaveProperty('measurement.quantity', [0.125, 0.667]);
         });
-        //TODO: decimals
-        // test('Quantity is a range with decimals', () => {});
+        test('Quantity is a range with decimals', () => {
+            expect(parse('1.5 - 2.5 cup of water')).toHaveProperty('measurement.quantity', [1.5, 2.5]);
+            expect(parse('1.3 - 1.5 cup of water')).toHaveProperty('measurement.quantity', [1.3, 1.5]);
+            expect(parse('2.6 - 3.0 cup of water')).toHaveProperty('measurement.quantity', [2.6, 3]);
+            expect(parse('3.25-3.75 oz. cheese')).toHaveProperty('measurement.quantity', [3.25, 3.75]);
+            expect(parse('3.125-3.25 tsp salt')).toHaveProperty('measurement.quantity', [3.125, 3.25]);
+        });
         test('Quantity is a range with any of whole numbers, fractions, or decimals', () => {
             expect(parse('1/2 - 1 cup of water')).toHaveProperty('measurement.quantity', [0.5, 1]);
             expect(parse('1 1/3 to 1 1/2 cup of water')).toHaveProperty('measurement.quantity', [1.333, 1.5]);
@@ -277,6 +281,14 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('14 g. /1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
             expect(parse('14 g./ 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
             expect(parse('14 g./1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+        });
+        test('Converted measurement is decimal', () => {
+            expect(parse('14 g. (0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g.(0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g. / 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g. /0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g./ 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g./0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
         });
         test('Converted measurement is whole number and fraction', () => {
             expect(parse('35 g. (1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
