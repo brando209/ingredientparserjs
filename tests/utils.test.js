@@ -30,8 +30,6 @@ describe('toNumberFromString(string)', () => {
         expect(toNumberFromString('1,2')).toEqual(NaN);
         expect(toNumberFromString('1,2,3')).toEqual(NaN);
         expect(toNumberFromString('ABC')).toEqual(NaN);
-    });
-    test('Returns NaN when input string contains more than one number', () => {
         expect(toNumberFromString('1 1/2')).toEqual(NaN);
         expect(toNumberFromString('1 2 3')).toEqual(NaN);
         expect(toNumberFromString('1.5 2')).toEqual(NaN);
