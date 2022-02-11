@@ -34,5 +34,5 @@ result.convertedMeasurement.unit //=> 'gram'
 ## Updates for minor release 1.1.0
 
 The ingredient parser now has support for inputs containing the following:
--Unicode fractions
--Decimals
+- Unicode fractions
+- Decimals
