@@ -29,37 +29,33 @@ function extractMeasurement(ingredientString) {
         isRange: false
     }
 
-    //Pre-process string
+    //================== PRE-PROCESS STRING ====================
     ingredientString = convertUnicodeFractions(ingredientString);
     //If there is a slash directly preceeded by a non-digit, assume it is a measurement conversion and add a
-    //space before the slash. Ex: '28g/1oz flour' becomes '28g /1oz flour'.
-    ingredientString = ingredientString.replace(/(?<!\d)\//, ' /');
+    //space before the slash. Ex: '28g/1oz flour' becomes '28g /1oz flour'. (Needed with current `conversionRegex`)
+    ingredientString = ingredientString.replace(/(?<!\d)\//g, ' /');
     //If there is an opening parens immediately proceeded by a digit and immediately preceeded by a non-digit,
-    //assume it is a measurement conversion. Ex: '28g(1oz) flour' becomes '28g (1oz) flour'.
-    ingredientString = ingredientString.replace(/(?<!\d)\((?=\d)/, ' (');
+    //assume it is a measurement conversion and add space. Ex: '28g(1oz) flour' becomes '28g (1oz) flour'.
+    ingredientString = ingredientString.replace(/(?<!\d)\((?=\d)/g, ' (');
+    //If there is a slash contained between two digits, assume it is a fraction and convert to a decimal
+    ingredientString = ingredientString.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => (toNumberFromString(whole) + toNumberFromString(frac)));
 
     //Extract the measurement quantity. Assumes measurement is at start of string.
     //If quantity is a range, assumes it to be structured like: '1-2' or '1 to 2' (may include whitespace in between)
-    //Quantity may have fractions(Ex: '1/2 cup'). These fractions may be mixed with range(Ex: '1 1/2 to 2 cups).
-    const quantityRegex = /^(\d+\/*\d*)\s*(\d\/\d)*\s*(\-|to)*\s*(\d+\/*\d*)*\s*(\d\/\d)*\s*/;
-    //Five groups are captured:
-    //  1. First number/fraction(may not be whole, ex: '1/2 cup')
-    //  2. Fractional part of min range value (if exists)
-    //  3. Range identifier, '-' or 'to' (if exists)
-    //  4. Second number/fraction (if exists)
-    //  5. Fractional part of max range value (if exists)
+    const quantityRegex = /^(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*/;
+    //Three groups are captured:
+    //  1. First number/decimal
+    //  2. Range identifier, '-' or 'to' (if exists)
+    //  3. Second number/decimal (if exists)
     let quantityStringLength = 0; //Length of the quantity portion of the string
     const quantityMatch = ingredientString.replace(/^an?\s+/i, "1 ").match(quantityRegex);
 
     if(quantityMatch) {
-        const [minNum, minFrac] = [quantityMatch[1], quantityMatch[2]];
-        const isRange = quantityMatch[3];
-        const [maxNum, maxFrac] = [quantityMatch[4], quantityMatch[5]]
+        const minQuantity = toNumberFromString(quantityMatch[1]);
+        const isRange = quantityMatch[2];
+        const maxQuantity = quantityMatch[3] ? toNumberFromString(quantityMatch[3]) : minQuantity;
         //Length of measurement quantity portion of string
         quantityStringLength = quantityMatch[0].length;
-        
-        const minQuantity = toNumberFromString(minNum) + toNumberFromString(minFrac);
-        const maxQuantity = toNumberFromString(maxNum) + toNumberFromString(maxFrac);
         
         if(isRange) {
             measurement.isRange = true;
@@ -87,7 +83,7 @@ function extractMeasurement(ingredientString) {
     const unitRegex = /\b(cups?|c\.?|cloves?|gallons?|gals?\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|small|sm\.?|medium|med\.?|large|lg\.?)(?!\S)/i
     //One group is captured: the unit (without ending period, if any)
     const unitMatch = ingredientStringWithoutQuantityAndUnit.match(unitRegex);
-    const conversionRegex = /^(\(|\/)\s*(\d+\/*\d*)\s*(\d\/\d)*\s*(cups?|c\.?|gallons?|gals?\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|pieces?|pcs?\.?|slices?|sticks?)(\)?)/;
+    const conversionRegex = /^(\(|\/)\s*(\d+\.?\d*)\s*(cups?|c\.?|gallons?|gals?\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|pieces?|pcs?\.?|slices?|sticks?)(\)?)/;
     let conversionMatch, conversionStringLength = 0;
     if(!packageMatch && unitMatch) {
         unitStringLength = unitMatch[0].length;
@@ -101,8 +97,8 @@ function extractMeasurement(ingredientString) {
 
         if(conversionMatch) {
             conversionStringLength = conversionMatch[0].length;
-            conversion.quantity = toNumberFromString(conversionMatch[2]) + toNumberFromString(conversionMatch[3]);
-            conversion.unit = unitMap.get(conversionMatch[4].replace(".", "").toLowerCase().trim());
+            conversion.quantity = toNumberFromString(conversionMatch[2]);
+            conversion.unit = unitMap.get(conversionMatch[3].replace(".", "").toLowerCase().trim());
 
             ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.substring(conversionStringLength).trim();
 
