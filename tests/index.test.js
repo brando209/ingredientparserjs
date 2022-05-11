@@ -13,6 +13,7 @@ test('Returns an object with the correct properties', () => {
 describe('Correctly extracts the ingredient measurements', () => {
     describe('Quantity', () => {
         test('Quantity is a whole number', () => {
+            expect(parse('1 tomato')).toHaveProperty('measurement.quantity', 1);
             expect(parse('1 cup of water')).toHaveProperty('measurement.quantity', 1);
             expect(parse('2 liters of water')).toHaveProperty('measurement.quantity', 2);
             expect(parse('10 pints water')).toHaveProperty('measurement.quantity', 10);
@@ -26,12 +27,15 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1/8 tsp salt')).toHaveProperty('measurement.quantity', 0.125);
         });
         test('Quantity is a whole number and fraction', () => {
-            //TODO: Add support for '&' and 'and' when giving fraction > 1. (Ex: '1 & 1/2 cups water')
             expect(parse('1 1/2 cup of water')).toHaveProperty('measurement.quantity', 1.5);
             expect(parse('1 1/3 cup of water')).toHaveProperty('measurement.quantity', 1.333);
             expect(parse('2 2/3 cup of water')).toHaveProperty('measurement.quantity', 2.667);
             expect(parse('3 1/4 oz. cheese')).toHaveProperty('measurement.quantity', 3.25);
             expect(parse('3 1/8 tsp salt')).toHaveProperty('measurement.quantity', 3.125);
+            expect(parse('1 and 1/2 cup of water')).toHaveProperty('measurement.quantity', 1.5);
+            expect(parse('1 & 1/2 cup of water')).toHaveProperty('measurement.quantity', 1.5);
+            expect(parse('9and3/4 lb. of sugar')).toHaveProperty('measurement.quantity', 9.75);
+            expect(parse('9&3/4 lb. of sugar')).toHaveProperty('measurement.quantity', 9.75);
         });
         test('Quantity is a decimal', () => {
             expect(parse('1.5 cup of water')).toHaveProperty('measurement.quantity', 1.5);
@@ -62,11 +66,17 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('3.125-3.25 tsp salt')).toHaveProperty('measurement.quantity', [3.125, 3.25]);
         });
         test('Quantity is a range with any of whole numbers, fractions, or decimals', () => {
+            expect(parse('0.5 - 1 cup of water')).toHaveProperty('measurement.quantity', [0.5, 1]);
             expect(parse('1/2 - 1 cup of water')).toHaveProperty('measurement.quantity', [0.5, 1]);
             expect(parse('1 1/3 to 1 1/2 cup of water')).toHaveProperty('measurement.quantity', [1.333, 1.5]);
             expect(parse('2 2/3-2 3/4 cups of water')).toHaveProperty('measurement.quantity', [2.667, 2.75]);
             expect(parse('1 1/8 - 1 1/4 oz. cheese')).toHaveProperty('measurement.quantity', [1.125, 1.25]);
             expect(parse('2 1/8- 3 2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
+
+            expect(parse('2&1/8-3&2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
+            expect(parse('2 & 1/8 - 3 & 2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
+            expect(parse('2 and 1/8-3 and 2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
+            expect(parse('2and1/8-3and2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
         });
 
         test('Quantity is a unicode fraction', () => {
@@ -232,6 +242,7 @@ describe('Correctly extracts the ingredient measurements', () => {
         test('Unit is any variation of "bag"', () => {
             expect(parse('1 bag potato chips')).toHaveProperty('measurement.unit', 'bag');
             expect(parse('1 bag (10oz.) potato chips')).toHaveProperty('measurement.unit', 'bag');
+            expect(parse('1 10oz. bag potato chips')).toHaveProperty('measurement.unit', 'bag');
             expect(parse('2 bags potato chips')).toHaveProperty('measurement.unit', 'bag');
             expect(parse('2 bags (10oz.) potato chips')).toHaveProperty('measurement.unit', 'bag');
         });
@@ -250,12 +261,12 @@ describe('Correctly extracts the ingredient measurements', () => {
         test('Unit is any variation of "small"', () => {
             expect(parse('1 small egg')).toHaveProperty('measurement.unit', 'small');
             expect(parse('1 sm egg')).toHaveProperty('measurement.unit', 'small');
-            expect(parse('1 sm egg')).toHaveProperty('measurement.unit', 'small');
+            expect(parse('1 sm. egg')).toHaveProperty('measurement.unit', 'small');
         });
         test('Unit is any variation of "medium"', () => {
             expect(parse('1 medium egg')).toHaveProperty('measurement.unit', 'medium');
             expect(parse('1 med egg')).toHaveProperty('measurement.unit', 'medium');
-            expect(parse('1 med egg')).toHaveProperty('measurement.unit', 'medium');
+            expect(parse('1 med. egg')).toHaveProperty('measurement.unit', 'medium');
         });
         test('Unit is any variation of "large"', () => {
             expect(parse('1 large egg')).toHaveProperty('measurement.unit', 'large');
@@ -292,12 +303,33 @@ describe('Correctly extracts the ingredient measurements', () => {
         });
         test('Converted measurement is whole number and fraction', () => {
             expect(parse('35 g. (1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. (1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. (1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
             expect(parse('35 g.(1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g.(1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g.(1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
             expect(parse('35 g. / 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. /1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. / 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. / 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. /1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. /1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
             expect(parse('35 g./ 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./ 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./ 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
             expect(parse('35 g./1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g./1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
         });
+        test('Converted measurement is a package size', () => {
+            expect(parse('1 can (8 oz) of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', isRange: false });
+            expect(parse('1 (8 oz) can of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', isRange: false });
+            expect(parse('1 box (1 lb) of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
+            expect(parse('1 (1 lb) box of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
+            expect(parse('1 bag (1 lb) of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
+            expect(parse('1 (1 lb) bag of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
+            expect(parse('1 package (120g) of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
+            expect(parse('1 (120g) package of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
+        })
     });
 });
 
@@ -313,5 +345,29 @@ describe('Correctly extracts the ingredient name', () => {
         expect(parse('1 cup of fried rice')).toHaveProperty('name', 'fried rice');
         expect(parse('1 ounce of shrimp')).toHaveProperty('name', 'shrimp');
     });
-    //TODO: More tests with ingredient names
+    test('Ingredient name followed by additional info', () => {
+        expect(parse('1 stick (8oz.) of butter, sliced into tablespoons')).toHaveProperty('name', 'butter');
+        expect(parse('1 can (16oz) of tomato sauce (you can use pasta sauce if you like)')).toHaveProperty('name', 'tomato sauce');
+    });
+});
+
+describe('Correctly extracts any additional information', () => {
+    test('Additional information after comma', () => {
+        expect(parse('1 stick of butter, sliced into tablespoons')).toHaveProperty('additional', 'sliced into tablespoons');
+        expect(parse('1 garlic clove, minced')).toHaveProperty('additional', 'minced');
+        expect(parse('1 ounce chocolate, melted')).toHaveProperty('additional', 'melted');
+        expect(parse('1 tomato, thinly sliced')).toHaveProperty('additional', 'thinly sliced');
+    });
+    test('Additional information in parenthesis', () => {
+        expect(parse('1 stick of butter (sliced into tablespoons)')).toHaveProperty('additional', 'sliced into tablespoons');
+        expect(parse('1 stick (8tbsp.) butter (sliced into tablespoons)')).toHaveProperty('additional', 'sliced into tablespoons');
+        expect(parse('1 can (16oz) of tomato sauce (you can use pasta sauce if you like)')).toHaveProperty('additional', 'you can use pasta sauce if you like');
+        expect(parse('1 garlic clove (minced)')).toHaveProperty('additional', 'minced');
+        expect(parse('1 ounce chocolate (melted)')).toHaveProperty('additional', 'melted');
+        expect(parse('1 tomato (thinly sliced)')).toHaveProperty('additional', 'thinly sliced');
+    });
+    //TODO:
+    // test('Additional information before ingredient name', () => {
+
+    // });
 });
