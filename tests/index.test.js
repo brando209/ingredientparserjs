@@ -208,10 +208,60 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 L. water')).toHaveProperty('measurement.unit', 'liter');
             expect(parse('2 liters water')).toHaveProperty('measurement.unit', 'liter');
         });
+        test('Unit is any variation of "fluid ounce"', () => {
+            expect(parse('1 fluid ounce of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+            expect(parse('1 fl. ounce of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+            expect(parse('1 fl ounce of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+            expect(parse('1 fl oz of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+            expect(parse('1 fl. oz of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+            expect(parse('1 fl. oz. of orange juice')).toHaveProperty('measurement.unit', 'fluid ounce');
+        });
+        test('Unit is any variation of "head"', () => {
+            expect(parse('1 head of lettuce')).toHaveProperty('measurement.unit', 'head');
+            expect(parse('2 heads of lettuce')).toHaveProperty('measurement.unit', 'head');
+        });
+        test('Unit is any ariation of "crown"', () => {
+            expect(parse('1 crown of broccoli')).toHaveProperty('measurement.unit', 'crown');
+            expect(parse('2 crowns of broccoli')).toHaveProperty('measurement.unit', 'crown');
+        })
+        test('Unit is any variation of "centimeter"', () => {
+            expect(parse('1 centimeter of ginger root')).toHaveProperty('measurement.unit', 'centimeter');
+            expect(parse('1 cm of ginger root')).toHaveProperty('measurement.unit', 'centimeter');
+            expect(parse('1 cm. of ginger root')).toHaveProperty('measurement.unit', 'centimeter');
+            expect(parse('2 centimeters of ginger root')).toHaveProperty('measurement.unit', 'centimeter');
+            expect(parse('2 cm. of ginger root')).toHaveProperty('measurement.unit', 'centimeter');
+        });
+        test('Unit is any variation of "inch"', () => {
+            expect(parse('1 inch of ginger root')).toHaveProperty('measurement.unit', 'inch');
+            expect(parse('1 in of ginger root')).toHaveProperty('measurement.unit', 'inch');
+            expect(parse('1 in. of ginger root')).toHaveProperty('measurement.unit', 'inch');
+            expect(parse('2 inches of ginger root')).toHaveProperty('measurement.unit', 'inch');
+        })
+        test('Unit is any variation of "foot"', () => {
+            expect(parse('1 foot of licorice rope')).toHaveProperty('measurement.unit', 'foot');
+            expect(parse('1 ft of licorice rope')).toHaveProperty('measurement.unit', 'foot');
+            expect(parse('1 ft. of licorice rope')).toHaveProperty('measurement.unit', 'foot');
+            expect(parse('1.5 feet of licorice rope')).toHaveProperty('measurement.unit', 'foot');
+        });
+        test('Unit is any variation of "head"', () => {
+            expect(parse('1 head of lettuce')).toHaveProperty('measurement.unit', 'head');
+            expect(parse('2 heads of lettuce')).toHaveProperty('measurement.unit', 'head');
+        });
+        test('Unit is any variation of "ear"', () => {
+            expect(parse('1 ear of corn')).toHaveProperty('measurement.unit', 'ear');
+            expect(parse('4 ears of corn')).toHaveProperty('measurement.unit', 'ear');
+        });
+        test('Unit is any variaton of "drop"', () => {
+            expect(parse('1 drop of stevia extract')).toHaveProperty('measurement.unit', 'drop');
+            expect(parse('4-5 drops of stevia extract')).toHaveProperty('measurement.unit', 'drop');
+        });
+        test('Unit is any variation of "dash"', () => {
+            expect(parse('A dash of salt')).toHaveProperty('measurement.unit', 'dash');
+            expect(parse('2 dashes of salt')).toHaveProperty('measurement.unit', 'dash');
+        });
         test('Unit is any variation of "pinch"', () => {
             expect(parse('1 pinch salt')).toHaveProperty('measurement.unit', 'pinch');
             expect(parse('2 pinches salt')).toHaveProperty('measurement.unit', 'pinch');
-    
         });
         test('Unit is any variation of "piece"', () => {
             expect(parse('1 piece chocolate')).toHaveProperty('measurement.unit', 'piece');
@@ -227,6 +277,10 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('2 sticks butter')).toHaveProperty('measurement.unit', 'stick');
             
         });
+        test('Unit is any variation of "sprig"', () => {
+            expect(parse('1 sprig of rosemary')).toHaveProperty('measurement.unit', 'sprig');
+            expect(parse('2 sprigs of rosemary')).toHaveProperty('measurement.unit', 'sprig');
+        });
         test('Unit is any variation of "clove"', () => {
             expect(parse('1 clove garlic')).toHaveProperty('measurement.unit', 'clove');
             expect(parse('1 garlic clove')).toHaveProperty('measurement.unit', 'clove');
@@ -237,6 +291,14 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 can (8 oz.) fruit')).toHaveProperty('measurement.unit', 'can');
             expect(parse('2 cans fruit')).toHaveProperty('measurement.unit', 'can');
             expect(parse('2 cans (8 oz.) fruit')).toHaveProperty('measurement.unit', 'can');
+        });
+        test('Unit is any variation of "carton"', () => {
+            expect(parse('1 carton (28oz) of milk')).toHaveProperty('measurement.unit', 'carton');
+            expect(parse('2 cartons (28oz) of milk')).toHaveProperty('measurement.unit', 'carton');
+        });
+        test('Unit is any variation of "container"', () => {
+            expect(parse('1 container (2oz) of sprouts')).toHaveProperty('measurement.unit', 'container');
+            expect(parse('2 containers (2oz) of sprouts')).toHaveProperty('measurement.unit', 'container');
         });
         test('Unit is any variation of "bag"', () => {
             expect(parse('1 bag potato chips')).toHaveProperty('measurement.unit', 'bag');
@@ -249,6 +311,14 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 box cake mix')).toHaveProperty('measurement.unit', 'box');
             expect(parse('2 boxes cake mix')).toHaveProperty('measurement.unit', 'box');
         });
+        test('Unit is any variation of "bunch"', () => {
+            expect(parse('1 bunch of cilantro')).toHaveProperty('measurement.unit', 'bunch');
+            expect(parse('2 bunches of cilantro')).toHaveProperty('measurement.unit', 'bunch');
+        });
+        test('Unit is any variation of "pack"', () => {
+            expect(parse('1 pack of dried fruit')).toHaveProperty('measurement.unit', 'pack');
+            expect(parse('2 packs of dried fruit')).toHaveProperty('measurement.unit', 'pack');
+        })
         test('Unit is any variation of "package"', () => {
             expect(parse('1 package dried fruit')).toHaveProperty('measurement.unit', 'package');
             expect(parse('1 pkg dried fruit')).toHaveProperty('measurement.unit', 'package');
