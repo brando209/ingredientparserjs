@@ -59,7 +59,8 @@ function extractUnit(ingredientString) {
     let ingredientStringWithoutQuantityAndUnit = ingredientString;
 
     //First check if the unit is 'bag', 'box', 'can', or 'package'
-    const packageRegex = /\b(bags?|boxe?s?|cans?|packages?|pkgs?\.?)\b/i
+    //TODO: Find better regex for units like 'bunches' amd 'dashes'. Currently /bunche?s?/ but this is not correct because it matches 'bunche'.
+    const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?\.?)\b/i
     const packageMatch = ingredientString.match(packageRegex);
     if(packageMatch) {
         ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.slice(0, packageMatch.index).trim() + ingredientStringWithoutQuantityAndUnit.slice(packageMatch.index + packageMatch[0].length).trim();
@@ -69,14 +70,13 @@ function extractUnit(ingredientString) {
     let unitStringLength = 0; //Length of measurement unit portion of string
     let unitStringStart = 0; //Index of start of unit portion of string
     //If the unit is not 'bag', 'box', etc., assume the unit comes directly after the quantity(Ex: '4 oz. cheese').
-    const unitRegex = /\b(cups?|c\.?|cloves?|gallons?|gals?\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|small|sm\.?|medium|med\.?|large|lg\.?)(?!\S)/i
+    const unitRegex = /\b(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?|small|sm\.?|medium|med\.?|large|lg\.?)(?!\S)/i
     //One group is captured: the unit (without ending period, if any)
     const unitMatch = ingredientStringWithoutQuantityAndUnit.match(unitRegex);
     if(!packageMatch && unitMatch) {
         unitStringLength = unitMatch[0].length;
         unitStringStart = unitMatch.index;
-        
-        unit = unitMap.get(unitMatch[1].replace(".", "").toLowerCase().trim());
+        unit = unitMap.get(unitMatch[1].replaceAll(".", "").toLowerCase().trim());
         ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.slice(0, unitStringStart).trim() + (unitStringStart > 0 ? " " : "") + ingredientStringWithoutQuantityAndUnit.substring(unitStringStart + unitStringLength).trim();
     }
 
@@ -108,7 +108,7 @@ function extractAddedMeasurement(ingredientString) {
 }
 
 function extractConversion(ingredientString) {
-    const conversionRegex = /^(\(|\/)\s*(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|gallons?|gals?\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|pieces?|pcs?\.?|slices?|sticks?)(\)?)/;
+    const conversionRegex = /^(\(|\/)\s*(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?)(\)?)/;
     let conversion = {
         quantity: null,
         isRange: false,
