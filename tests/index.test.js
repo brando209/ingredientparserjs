@@ -101,7 +101,6 @@ describe('Correctly extracts the ingredient measurements', () => {
         });
     });
 
-
     describe('Unit', () => {
         test('Unit is any variation of "teaspoon"', () => {
             expect(parse('1 teaspoon water')).toHaveProperty('measurement.unit', 'teaspoon');
@@ -275,7 +274,6 @@ describe('Correctly extracts the ingredient measurements', () => {
         });
     });
 
-
     describe('Conversion',  () => {
         test('Converted measurement is whole number', () => {
             expect(parse('1 cup (4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
@@ -330,6 +328,54 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 package (120g) of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
             expect(parse('1 (120g) package of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
         })
+    });
+
+    describe('Measurement plus other measurements', () => {
+        test('Two measurements', () => {
+            expect(parse('1 tbsp plus 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1 tbsp + 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1 tbsp & 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+        });
+        
+        //Most likely will not see three or more added measurements but here is a test anyways. 
+        test('Three measurements', () => {
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+    
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+        });
     });
 });
 
