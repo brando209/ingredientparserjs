@@ -461,9 +461,19 @@ describe('Correctly extracts the ingredient name', () => {
         expect(parse('1 cup of fried rice')).toHaveProperty('name', 'fried rice');
         expect(parse('1 ounce of shrimp')).toHaveProperty('name', 'shrimp');
     });
-    test('Ingredient name followed by additional info', () => {
-        expect(parse('1 stick (8oz.) of butter, sliced into tablespoons')).toHaveProperty('name', 'butter');
-        expect(parse('1 can (16oz) of tomato sauce (you can use pasta sauce if you like)')).toHaveProperty('name', 'tomato sauce');
+    test('Contains alternate ingredients', () => {
+        expect(parse('1 tbsp butter or margarine').hasAlternativeIngredients).toBe(true);
+        expect(parse('1 tbsp butter or margarine').name[0]).toBe('butter');
+        expect(parse('1 tbsp butter or margarine').name[1]).toBe('margarine');
+
+        //TODO: Support list of ingredients where part of the name is implied(Ex: 'olive, canola, or vegetable oil', where 'oil' is implied for all ingredients)
+        expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').hasAlternativeIngredients).toBe(true);
+        expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').name[0]).toBe('olive oil');
+        expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').name[1]).toBe('canola oil');
+        expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').name[2]).toBe('vegetable oil');
+
+        expect(parse('1 tbsp olive oil,canola oil,or vegetable oil').hasAlternativeIngredients).toBe(true);
+
     });
 });
 
