@@ -15,6 +15,10 @@ function preprocess(string) {
     string = string.replace(/(?<=\d+)(\s*(and|&)\s*)(?=\d+\/\d+)/g, " ");
     //If there is a slash contained between two digits, assume it is a fraction and convert to a decimal
     string = string.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => (toNumberFromString(whole) + toNumberFromString(frac)));
+    //If there are multiple consecutive spaces, converge to single space
+    string = string.replaceAll(/\s{2,}/g, " ");
+    //If there is a comma seperated list, ensure there is a space after each comma
+    string = string.replaceAll(/,\s?/g, ", ");
     //If the string begins with the word 'A' or 'An', assume it to mean a single unit of ingredient and replace with the number '1'
     string = string.replace(/^an?\s+/i, "1 ");
 
@@ -172,14 +176,30 @@ function extractMeasurement(ingredientString) {
     return [measurements, hasAddedMeasurements, ingredientStringWithoutMeasurement]
 }
 
-//TODO: Account for additional info which is before the ingredient name (ex: '1 finely chopped onion')
-//Assumes the input begins with the ingredient name and any additional text will be after a ',' or within '(' and ')'.
+//TODO: Account for additional info which is before the ingredient name and not in parenthesis(ex: '1 finely chopped onion')
+//Assumes the input begins with the ingredient name (and any alternative ingredients).
+//Additional text is assumed to start after the first comma following the ingredient name(or names) or within parenthesis.
 function extractName(ingredientString) {
     ingredientString = ingredientString.replace(/^of\s/, "").trim();
-    const additionalRegex = /s*(,|\()/;
-    const additionalMatch = ingredientString.match(additionalRegex);
-    if(additionalMatch) return [ingredientString.substring(0, additionalMatch.index).trim(), ingredientString.substring(additionalMatch.index + 1).replace(/\)$/, "").trim()];
-    return [ingredientString, null];
+    //To seperate (using String.prototype.split) on the first comma not part of the ingredients list
+    const seperationRegex = /(?<=,?\s+or(?:\s+\w+)+),\s+|(?<!\s+or\s+),\s+(?!(?:\w+,?\s+)*or\s+)/;
+    //Matches any text within parenthesis
+    const parenRegex = /(?<=\()(?:\s*\w+\s*)*(?=\))/g;
+    
+    let additionalDetails = [];
+    const parenMatch = ingredientString.matchAll(parenRegex);
+    for(match of parenMatch) {
+        //Remove the section of the string within parenthesis(including parenthesis)
+        ingredientString = ingredientString.slice(0, match.index - 1).trim() + ingredientString.slice(match.index + match[0].length + 1).trim();
+        //Add the section within parenthesis to additionalDetails array
+        additionalDetails.push(match[0]);
+    }
+
+    const [ingredients, extra] = ingredientString.split(seperationRegex);
+    const alternatives = ingredients.split(/(?:,?\s+or\s+)|,\s+/);
+    extra && additionalDetails.push(extra);
+
+    return [alternatives.length === 1 ? alternatives[0] : alternatives, alternatives.length > 1, additionalDetails.join(', ')]
 }
 
 function parse(ingredientString) {
@@ -187,6 +207,7 @@ function parse(ingredientString) {
         name: null,
         measurement: null,
         convertedMeasurement: null,
+        hasAlternativeIngredients: false,
         hasAddedMeasurements: false,
         additional: null
     }
@@ -196,8 +217,9 @@ function parse(ingredientString) {
     result.convertedMeasurement = converted;
     result.hasAddedMeasurements = hasAddedMeasurements;
 
-    const [name, additionalDetails] = extractName(restOfIngredientString);
+    const [name, hasAlternativeIngredients, additionalDetails] = extractName(restOfIngredientString);
     result.name = name;
+    result.hasAlternativeIngredients = hasAlternativeIngredients;
     result.additional = additionalDetails;
 
     return result;
