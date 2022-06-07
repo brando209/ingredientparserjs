@@ -14,13 +14,15 @@ function preprocess(string) {
     //remove the 'and' or '&'. Ex: '1 & 1/2 cups' becomes '1 1/2 cups'
     string = string.replace(/(?<=\d+)(\s*(and|&)\s*)(?=\d+\/\d+)/g, " ");
     //If there is a slash contained between two digits, assume it is a fraction and convert to a decimal
-    string = string.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => (toNumberFromString(whole) + toNumberFromString(frac)));
+    string = string.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => ((whole ? toNumberFromString(whole) : " ") + toNumberFromString(frac)));
     //If there are multiple consecutive spaces, converge to single space
     string = string.replaceAll(/\s{2,}/g, " ");
     //If there is a comma seperated list, ensure there is a space after each comma
     string = string.replaceAll(/,\s?/g, ", ");
     //If the string begins with the word 'A' or 'An', assume it to mean a single unit of ingredient and replace with the number '1'
     string = string.replace(/^an?\s+/i, "1 ");
+    //Trim whitespace from edges
+    string = string.trim();
 
     return string;
 }
@@ -112,7 +114,7 @@ function extractAddedMeasurement(ingredientString) {
 }
 
 function extractConversion(ingredientString) {
-    const conversionRegex = /^(\(|\/)\s*(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?)(\)?)/;
+    const conversionRegex = /^(\(|\/)\s*(?:\s*about\s+)?(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?)(\)?)/;
     let conversion = {
         quantity: null,
         isRange: false,
@@ -148,7 +150,7 @@ function extractConversion(ingredientString) {
 
 function extractMeasurement(ingredientString) {
     const measurements = [null, null];
-    const measurement = {
+    let measurement = {
         quantity: null,
         isRange: false,
         unit: null
@@ -164,6 +166,8 @@ function extractMeasurement(ingredientString) {
     //Extract unit
     let { unit, ingredientStringWithoutQuantityAndUnit } = extractUnit(ingredientStringWithoutQuantity);
     measurement.unit = unit;
+
+    if(!quantity) measurement = null;
 
     //Extract added measurements
     let { addedMeasurements, hasAddedMeasurements, ingredientStringWithoutAddedMeasurement } = extractAddedMeasurement(ingredientStringWithoutQuantityAndUnit)
@@ -199,7 +203,9 @@ function extractName(ingredientString) {
     const alternatives = ingredients.split(/(?:,?\s+or\s+)|,\s+/);
     extra && additionalDetails.push(extra);
 
-    return [alternatives.length === 1 ? alternatives[0] : alternatives, alternatives.length > 1, additionalDetails.join(', ')]
+    const additionalString = additionalDetails.length > 0 ? additionalDetails.join(', ') : null;
+
+    return [alternatives.length === 1 ? alternatives[0] : alternatives, alternatives.length > 1, additionalString]
 }
 
 function parse(ingredientString) {
