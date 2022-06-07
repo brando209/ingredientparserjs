@@ -78,7 +78,9 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('2 and 1/8-3 and 2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
             expect(parse('2and1/8-3and2/3 tsp salt')).toHaveProperty('measurement.quantity', [2.125, 3.667]);
         });
-
+        //TODO: Quantities with mixed unit ranges or units on high and low end of range
+        // EX: '1 cup - 2 cups of water' or '14 grams - 1 oz of flour'
+        
         test('Quantity is a unicode fraction', () => {
             expect(parse('½ cup cheese')).toHaveProperty('measurement.quantity', 0.5);
             expect(parse('⅓ cup cheese')).toHaveProperty('measurement.quantity', 0.333);
@@ -447,8 +449,19 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
         });
     });
-});
 
+    describe('No quantity and/or unit present in input', () => {
+        test('Measurement is not present', () => {
+            expect(parse('salt').measurement).toBe(null);
+            expect(parse('salt').convertedMeasurement).toBe(null);
+        })
+        test('Quantity with no unit', () => {
+            expect(parse('1 onion')).toHaveProperty('measurement.quantity', 1);
+            expect(parse('1 onion')).toHaveProperty('measurement.unit', null);
+        });
+        // TODO: test('Unit with no quantity?', () => {});
+    });
+});
 
 describe('Correctly extracts the ingredient name', () => {
     test('Simple ingredient names', () => {
@@ -472,8 +485,10 @@ describe('Correctly extracts the ingredient name', () => {
         expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').name[1]).toBe('canola oil');
         expect(parse('1 tbsp olive oil, canola oil, or vegetable oil').name[2]).toBe('vegetable oil');
 
-        expect(parse('1 tbsp olive oil,canola oil,or vegetable oil').hasAlternativeIngredients).toBe(true);
-
+        expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').hasAlternativeIngredients).toBe(true);
+        expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[0]).toBe('rice vinegar');
+        expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[1]).toBe('apple cider vinegar');
+        expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[2]).toBe('white vinegar');
     });
 });
 
@@ -492,8 +507,9 @@ describe('Correctly extracts any additional information', () => {
         expect(parse('1 ounce chocolate (melted)')).toHaveProperty('additional', 'melted');
         expect(parse('1 tomato (thinly sliced)')).toHaveProperty('additional', 'thinly sliced');
     });
-    //TODO:
-    // test('Additional information before ingredient name', () => {
-
-    // });
+    test('Multiple additional information', () => {
+        expect(parse('1 (very ripe) tomato, thinly sliced')).toHaveProperty('additional', 'very ripe, thinly sliced');
+        expect(parse('1 (very ripe) tomato (thinly sliced)')).toHaveProperty('additional', 'very ripe, thinly sliced');
+    });
+    //TODO: test('Additional information before ingredient name', () => {});
 });
