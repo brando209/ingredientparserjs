@@ -122,7 +122,8 @@ will return:
   additional: null
 }
 ```
-Note: A converted measurement is assumed to come directly after the initial measurement. If a converted measurement is not after the initial measurement, it will be place within the `additional` string instead of parsed into an object. This is shown below.
+> Note: A converted measurement is assumed to come directly after the initial measurement. If a converted measurement is not after the initial measurement, it will be placed within the `additional` string instead of parsed into an object. This is shown below.
+
 ```javascript
 parser.parse('1 can tomato paste (8 ounces)');
 ```
@@ -172,9 +173,28 @@ will return:
 }
 ```
 
+<hr>
+
+
+```javascript
+parser.parse('1 cup milk (or buttermilk, almond milk, or coconut milk)');
+```
+will return:
+```
+{
+  name: [ 'milk', 'buttermilk', 'almond milk', 'coconut milk' ],
+  measurement: { quantity: 1, isRange: false, unit: 'cup' },
+  convertedMeasurement: null,
+  hasAlternativeIngredients: true,
+  hasAddedMeasurements: false,
+  additional: null
+}
+```
+> Note: For alternate ingredients within parenthesis to be recognized, the phrase within parenthesis must begin with the word 'or'. Otherwise, the phrase within parenthesis will be placed within the `additional` string.
+
 ### Example: Added measurements
 ```javascript
-parser.parse('3 tablespoons plus 2 teaspoon vegetable oil');
+parser.parse('3 tablespoons plus 2 teaspoons vegetable oil');
 ```
 will return:
 ```
@@ -222,6 +242,10 @@ As of version 1.2.0, the parser has support for inputs containing the following:
 - Alternate ingredients
 - Added measurements
 - Additional units of measurement
+
+## Updates for patch 1.2.1
+
+Patch 1.2.1 addresses issues [#1](https://github.com/brando209/ingredientparserjs/issues/1) and [#2](https://github.com/brando209/ingredientparserjs/issues/2).
 
 ## Contributing
 Found a bug? Please take the time to submit an issue [here](https://github.com/brando209/ingredientparserjs/issues). Have a bit more time than that? Track the bug down, fix it, then submit a pull request [here](https://github.com/brando209/ingredientparserjs/pulls). Alternately, if you just want to help improve the ingredient parser by recommending an improvement or a new feature, you can do that [here](https://github.com/brando209/ingredientparserjs/issues) as well. All help is greatly appreciated!  
