@@ -188,7 +188,7 @@ function extractName(ingredientString) {
     //To seperate (using String.prototype.split) on the first comma not part of the ingredients list
     const seperationRegex = /(?<=,?\s+or(?:\s+\w+)+),\s+|(?<!\s+or\s+),\s+(?!(?:\w+,?\s+)*or\s+)/;
     //Matches any words within parenthesis(unless special characters other than [`~!@#$%\^&*-_=+\\;:'",<.>/?] are present)
-    const parenRegex = /(?<=\()(?:\s*\w*[`~!@#$%\^&*-_=+\\;:'",<.>/?]*)*(?=\))/;
+    const parenRegex = /(?<=\()(?:\s*\w*[`~!@#$%\^&*-_=+\\;:'",<\.>/?]*)*(?=\))/;
     let additionalDetails = [];
     let parenMatch = ingredientString.match(parenRegex);
     while(parenMatch) {
