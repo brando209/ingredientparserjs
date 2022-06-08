@@ -187,20 +187,32 @@ function extractName(ingredientString) {
     ingredientString = ingredientString.replace(/^of\s/, "").trim();
     //To seperate (using String.prototype.split) on the first comma not part of the ingredients list
     const seperationRegex = /(?<=,?\s+or(?:\s+\w+)+),\s+|(?<!\s+or\s+),\s+(?!(?:\w+,?\s+)*or\s+)/;
-    //Matches any text within parenthesis
-    const parenRegex = /(?<=\()(?:\s*\w+\s*)*(?=\))/g;
-    
+    //Matches any words within parenthesis(unless special characters other than [-'"&*!,\\?.] are present)
+    const parenRegex = /(?<=\()(?:\s*\w*[-'"&*!,\\?.]*)*(?=\))/;
     let additionalDetails = [];
-    const parenMatch = ingredientString.matchAll(parenRegex);
-    for(match of parenMatch) {
-        //Remove the section of the string within parenthesis(including parenthesis)
-        ingredientString = ingredientString.slice(0, match.index - 1).trim() + ingredientString.slice(match.index + match[0].length + 1).trim();
-        //Add the section within parenthesis to additionalDetails array
-        additionalDetails.push(match[0]);
+    let parenMatch = ingredientString.match(parenRegex);
+    while(parenMatch) {
+        //If the section of the string within parenthesis starts with 'or', assume it to be an alternate ingredient(or list).
+        if(parenMatch[0].match(/^or/)) {
+            //If this is a list, remove the parenthesis and replace leading 'or' with a comma.
+            if(parenMatch[0].match(/(?:,?\s+or\s+)|,\s+/)) {
+                ingredientString = ingredientString.slice(0, parenMatch.index - 1) + "," + ingredientString.slice(parenMatch.index + 2, parenMatch.index + parenMatch[0].length) + ingredientString.slice(parenMatch.index + parenMatch[0].length + 1);
+            } else {
+                //If not a list, remove the parenthesis
+                ingredientString = ingredientString.slice(0, parenMatch.index - 1) + ingredientString.slice(parenMatch.index, parenMatch.index + parenMatch[0].length) + ingredientString.slice(parenMatch.index + parenMatch[0].length + 1);
+            }
+        } else {
+            //Remove the section of the string within parenthesis(including parenthesis)
+            ingredientString = ingredientString.slice(0, parenMatch.index - 1) + ingredientString.slice(parenMatch.index + parenMatch[0].length + 1);
+            //Add the section within parenthesis to additionalDetails array
+            additionalDetails.push(parenMatch[0]);
+        }
+        //Find next match
+        parenMatch = ingredientString.match(parenRegex);
     }
 
     const [ingredients, extra] = ingredientString.split(seperationRegex);
-    const alternatives = ingredients.split(/(?:,?\s+or\s+)|,\s+/);
+    const alternatives = ingredients.split(/(?:,?\s+or\s+)|,\s+/).map(alt => alt.trim());
     extra && additionalDetails.push(extra);
 
     const additionalString = additionalDetails.length > 0 ? additionalDetails.join(', ') : null;
