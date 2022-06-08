@@ -193,7 +193,7 @@ function extractName(ingredientString) {
     let parenMatch = ingredientString.match(parenRegex);
     while(parenMatch) {
         //If the section of the string within parenthesis starts with 'or', assume it to be an alternate ingredient(or list).
-        if(parenMatch[0].match(/^or/)) {
+        if(parenMatch[0].match(/^or\s/)) {
             //If this is a list, remove the parenthesis and replace leading 'or' with a comma.
             if(parenMatch[0].match(/(?:,?\s+or\s+)|,\s+/)) {
                 ingredientString = ingredientString.slice(0, parenMatch.index - 1) + "," + ingredientString.slice(parenMatch.index + 2, parenMatch.index + parenMatch[0].length) + ingredientString.slice(parenMatch.index + parenMatch[0].length + 1);
@@ -242,5 +242,7 @@ function parse(ingredientString) {
 
     return result;
 }
+
+console.log(parse('1 cup fruit (orange or apple)'));
 
 exports.parse = parse;
