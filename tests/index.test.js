@@ -489,6 +489,16 @@ describe('Correctly extracts the ingredient name', () => {
         expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[0]).toBe('rice vinegar');
         expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[1]).toBe('apple cider vinegar');
         expect(parse('1 tbsp rice vinegar,apple cider vinegar,or white vinegar').name[2]).toBe('white vinegar');
+
+        expect(parse('1 cup milk (or buttermilk, almond milk, or coconut milk)').hasAlternativeIngredients).toBe(true);
+        expect(parse('1 cup milk (or buttermilk, almond milk, or coconut milk)').name[0]).toBe('milk');
+        expect(parse('1 cup milk (or buttermilk, almond milk, or coconut milk)').name[1]).toBe('buttermilk');
+        expect(parse('1 cup milk (or buttermilk, almond milk, or coconut milk)').name[2]).toBe('almond milk');
+        expect(parse('1 cup milk (or buttermilk, almond milk, or coconut milk)').name[3]).toBe('coconut milk');
+
+        expect(parse('1 ounce chocolate bar (or chocolate chips), melted').hasAlternativeIngredients).toBe(true);
+        expect(parse('1 ounce chocolate bar (or chocolate chips), melted').name[0]).toBe('chocolate bar');
+        expect(parse('1 ounce chocolate bar (or chocolate chips), melted').name[1]).toBe('chocolate chips');
     });
 });
 
@@ -507,9 +517,22 @@ describe('Correctly extracts any additional information', () => {
         expect(parse('1 ounce chocolate (melted)')).toHaveProperty('additional', 'melted');
         expect(parse('1 tomato (thinly sliced)')).toHaveProperty('additional', 'thinly sliced');
     });
+    test('Additional information in parenthesis containing special characters', () => {
+        expect(parse('1 teaspoon espresso powder (homemade or store-bought)').hasAlternativeIngredients).toBe(false);
+        expect(parse('1 teaspoon espresso powder (homemade or store-bought)').additional).toBe('homemade or store-bought');
+
+        expect(parse("1 tsp oil (it's okay to use any oil or none at all)").hasAlternativeIngredients).toBe(false);
+        expect(parse("1 tsp oil (it's okay to use any oil or none at all)").additional).toBe("it's okay to use any oil or none at all");
+
+        expect(parse("1 slice of pizza (one topping) (cheese, pepperoni, or sausage is the best!)").hasAlternativeIngredients).toBe(false);
+        expect(parse("1 slice of pizza (one topping) (cheese, pepperoni, or sausage is the best!)").additional).toBe("one topping, cheese, pepperoni, or sausage is the best!");
+    });
     test('Multiple additional information', () => {
         expect(parse('1 (very ripe) tomato, thinly sliced')).toHaveProperty('additional', 'very ripe, thinly sliced');
         expect(parse('1 (very ripe) tomato (thinly sliced)')).toHaveProperty('additional', 'very ripe, thinly sliced');
+        expect(parse('1 (very ripe) tomato (thinly sliced) (optional)')).toHaveProperty('additional', 'very ripe, thinly sliced, optional');
+        expect(parse('1 (very ripe) tomato (thinly sliced, optional)')).toHaveProperty('additional', 'very ripe, thinly sliced, optional');
+        expect(parse('1 (very ripe) tomato (thinly sliced), optional')).toHaveProperty('additional', 'very ripe, thinly sliced, optional');
     });
     //TODO: test('Additional information before ingredient name', () => {});
 });
