@@ -348,105 +348,105 @@ describe('Correctly extracts the ingredient measurements', () => {
 
     describe('Conversion',  () => {
         test('Converted measurement is whole number', () => {
-            expect(parse('1 cup (4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
-            expect(parse('1 cup(4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', isRange: false });
-            expect(parse('1 ounce / 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
-            expect(parse('1 ounce /28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
-            expect(parse('1 ounce/ 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
-            expect(parse('1 ounce/28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', isRange: false });
+            expect(parse('1 cup (4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 cup(4 tbsp.) honey').convertedMeasurement).toEqual({ quantity: 4, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 ounce / 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', unitPlural: 'grams', isRange: false });
+            expect(parse('1 ounce /28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', unitPlural: 'grams', isRange: false });
+            expect(parse('1 ounce/ 28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', unitPlural: 'grams', isRange: false });
+            expect(parse('1 ounce/28 g. chicken thigh').convertedMeasurement).toEqual({ quantity: 28, unit: 'gram', unitPlural: 'grams', isRange: false });
         });
         test('Converted measurement is fraction', () => {
-            expect(parse('14 g. (1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g.(1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g. / 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g. /1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g./ 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g./1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g. (1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g.(1/2 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g. / 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g. /1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g./ 1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g./1/2 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
         });
         test('Converted measurement is decimal', () => {
-            expect(parse('14 g. (0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g.(0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g. / 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g. /0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g./ 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
-            expect(parse('14 g./0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', isRange: false });
+            expect(parse('14 g. (0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g.(0.5 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g. / 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g. /0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g./ 0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('14 g./0.5 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 0.5, unit: 'ounce', unitPlural: 'ounces', isRange: false });
         });
         test('Converted measurement is whole number and fraction', () => {
-            expect(parse('35 g. (1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. (1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. (1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g.(1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g.(1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g.(1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. / 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. / 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. / 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. /1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g. /1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./ 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./ 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./ 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
-            expect(parse('35 g./1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', isRange: false });
+            expect(parse('35 g. (1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. (1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. (1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g.(1 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g.(1 & 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g.(1 and 1/4 oz.) chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. / 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. / 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. / 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. /1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g. /1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./ 1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./ 1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./ 1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./1 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./1 & 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('35 g./1 and 1/4 oz. chicken thigh').convertedMeasurement).toEqual({ quantity: 1.25, unit: 'ounce', unitPlural: 'ounces', isRange: false });
         });
         test('Converted measurement is a package size', () => {
-            expect(parse('1 can (8 oz) of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', isRange: false });
-            expect(parse('1 (8 oz) can of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', isRange: false });
-            expect(parse('1 box (1 lb) of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
-            expect(parse('1 (1 lb) box of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
-            expect(parse('1 bag (1 lb) of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
-            expect(parse('1 (1 lb) bag of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', isRange: false });
-            expect(parse('1 package (120g) of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
-            expect(parse('1 (120g) package of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', isRange: false });
+            expect(parse('1 can (8 oz) of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('1 (8 oz) can of tomato paste').convertedMeasurement).toEqual({ quantity: 8, unit: 'ounce', unitPlural: 'ounces', isRange: false });
+            expect(parse('1 box (1 lb) of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', unitPlural: 'pounds', isRange: false });
+            expect(parse('1 (1 lb) box of elbow pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', unitPlural: 'pounds', isRange: false });
+            expect(parse('1 bag (1 lb) of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', unitPlural: 'pounds', isRange: false });
+            expect(parse('1 (1 lb) bag of spaghetti pasta').convertedMeasurement).toEqual({ quantity: 1, unit: 'pound', unitPlural: 'pounds', isRange: false });
+            expect(parse('1 package (120g) of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', unitPlural: 'grams', isRange: false });
+            expect(parse('1 (120g) package of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', unitPlural: 'grams', isRange: false });
         })
     });
 
     describe('Measurement plus other measurements', () => {
         test('Two measurements', () => {
             expect(parse('1 tbsp plus 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1 tbsp + 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1 tbsp & 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
         });
         
         //Most likely will not see three or more added measurements but here is a test anyways. 
         test('Three measurements', () => {
             expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
-            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', unitPlural: 'cups', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp plus 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
     
             expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
-            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', unitPlural: 'cups', isRange: false });
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1/4 cup + 1 tbsp + 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
-            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', unitPlural: 'cups', isRange: false });
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1/4 cup and 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
-            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', unitPlural: 'cups', isRange: false });
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1/4 cup & 1 tbsp & 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
 
             expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').hasAddedMeasurements).toBe(true);
-            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', isRange: false });
-            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', isRange: false });
-            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[0]).toEqual({ quantity: 0.25, unit: 'cup', unitPlural: 'cups', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[1]).toEqual({ quantity: 1, unit: 'tablespoon', unitPlural: 'tablespoons', isRange: false });
+            expect(parse('1/4 cup plus 1 tbsp and 1 tsp of water').measurement[2]).toEqual({ quantity: 1, unit: 'teaspoon', unitPlural: 'teaspoons', isRange: false });
         });
     });
 
