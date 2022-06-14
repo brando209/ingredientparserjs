@@ -106,7 +106,7 @@ function extractAddedMeasurement(ingredientString) {
             const { unit: addedUnit, ingredientStringWithoutQuantityAndUnit } = extractUnit(ingredientStringWithoutQuantity);
             ingredientStringWithoutAddedMeasurement = ingredientStringWithoutQuantityAndUnit;
             unit = addedUnit;
-            unitPlural = pluralUnitMap[addedUnit];
+            unitPlural = addedUnit && pluralUnitMap[addedUnit];
             addedMeasurements.push({ quantity, isRange, unit, unitPlural });
         }
         hasAddedMeasurementsMatch = ingredientStringWithoutAddedMeasurement.match(hasAddedMeasurementsRegex);
@@ -140,7 +140,7 @@ function extractConversion(ingredientString) {
         } else conversion.quantity = minQuantity;
 
         conversion.unit = unitMap.get(conversionMatch[5].replace(".", "").toLowerCase().trim());
-        conversion.unitPlural = pluralUnitMap[conversion.unit];
+        conversion.unitPlural = conversion.unit && pluralUnitMap[conversion.unit];
 
         ingredientStringWithoutMeasurement = ingredientStringWithoutMeasurement.substring(conversionStringLength).trim();
 
@@ -170,7 +170,7 @@ function extractMeasurement(ingredientString) {
     //Extract unit
     let { unit, ingredientStringWithoutQuantityAndUnit } = extractUnit(ingredientStringWithoutQuantity);
     measurement.unit = unit;
-    measurement.unitPlural = pluralUnitMap[unit];
+    measurement.unitPlural = unit && pluralUnitMap[unit];
 
     if(!quantity) measurement = null;
 
