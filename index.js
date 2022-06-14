@@ -1,4 +1,4 @@
-const { unitMap } = require('./src/units');
+const { unitMap, pluralUnitMap } = require('./src/units');
 const { toNumberFromString, convertUnicodeFractions } = require('./src/utils');
 
 //Pre-process string
@@ -96,7 +96,7 @@ function extractAddedMeasurement(ingredientString) {
     let hasAddedMeasurements = false;
     let addedMeasurements = [];
     do{
-        let quantity = null, unit = null, isRange = false;
+        let quantity = null, unit = null, unitPlural = null, isRange = false;
         if(hasAddedMeasurementsMatch) {
             hasAddedMeasurements = true;
             ingredientStringWithoutAddedMeasurement = ingredientStringWithoutAddedMeasurement.slice(hasAddedMeasurementsMatch[0].length).trim();
@@ -106,7 +106,8 @@ function extractAddedMeasurement(ingredientString) {
             const { unit: addedUnit, ingredientStringWithoutQuantityAndUnit } = extractUnit(ingredientStringWithoutQuantity);
             ingredientStringWithoutAddedMeasurement = ingredientStringWithoutQuantityAndUnit;
             unit = addedUnit;
-            addedMeasurements.push({ quantity, isRange, unit });
+            unitPlural = pluralUnitMap[addedUnit];
+            addedMeasurements.push({ quantity, isRange, unit, unitPlural });
         }
         hasAddedMeasurementsMatch = ingredientStringWithoutAddedMeasurement.match(hasAddedMeasurementsRegex);
     } while(hasAddedMeasurementsMatch);
@@ -118,7 +119,8 @@ function extractConversion(ingredientString) {
     let conversion = {
         quantity: null,
         isRange: false,
-        unit: null
+        unit: null,
+        unitPlural: null
     }
     let conversionMatch, conversionStringLength = 0;
     let ingredientStringWithoutMeasurement = ingredientString;
@@ -138,6 +140,7 @@ function extractConversion(ingredientString) {
         } else conversion.quantity = minQuantity;
 
         conversion.unit = unitMap.get(conversionMatch[5].replace(".", "").toLowerCase().trim());
+        conversion.unitPlural = pluralUnitMap[conversion.unit];
 
         ingredientStringWithoutMeasurement = ingredientStringWithoutMeasurement.substring(conversionStringLength).trim();
 
@@ -153,7 +156,8 @@ function extractMeasurement(ingredientString) {
     let measurement = {
         quantity: null,
         isRange: false,
-        unit: null
+        unit: null,
+        unitPlural: null
     };
 
     ingredientString = preprocess(ingredientString);
@@ -166,6 +170,7 @@ function extractMeasurement(ingredientString) {
     //Extract unit
     let { unit, ingredientStringWithoutQuantityAndUnit } = extractUnit(ingredientStringWithoutQuantity);
     measurement.unit = unit;
+    measurement.unitPlural = pluralUnitMap[unit];
 
     if(!quantity) measurement = null;
 

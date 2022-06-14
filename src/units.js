@@ -94,4 +94,12 @@ for (let unit in units) {
     }
 }
 
-module.exports = { unitMap };
+const pluralUnitMap = {};
+for(let unit in pluralUnits) {
+    pluralUnitMap[unit] = pluralUnits[unit][0];
+}
+pluralUnitMap['small'] = null;
+pluralUnitMap['medium'] = null;
+pluralUnitMap['large'] = null;
+
+module.exports = { unitMap, pluralUnitMap };
