@@ -191,9 +191,6 @@ function extractMeasurement(ingredientString) {
     return [measurements, hasAddedMeasurements, ingredientStringWithoutMeasurement]
 }
 
-//TODO: Account for additional info which is before the ingredient name and not in parenthesis(ex: '1 finely chopped onion')
-//Assumes the input begins with the ingredient name (and any alternative ingredients).
-//Additional text is assumed to start after the first comma following the ingredient name(or names) or within parenthesis.
 function extractName(ingredientString) {
     ingredientString = ingredientString.replace(/^of\s/, "").trim();
     //To seperate (using String.prototype.split) on the first comma not part of the ingredients list
