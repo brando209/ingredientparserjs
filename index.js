@@ -65,7 +65,14 @@ function extractUnit(ingredientString) {
     let unit = null;
     let ingredientStringWithoutQuantityAndUnit = ingredientString;
 
-    //First check if the unit is 'bag', 'box', 'can', or 'package'
+    //First check for "clove" as name of ingredient(not unit of measurement)
+    const cloveIngredientRegex = /^((?:whole\s*|ground\s*)?cloves?\s*|cloves?\s*)(?=,|\(|$)/;
+    //If we find a match, return early with null as unit
+    if(ingredientStringWithoutQuantityAndUnit.match(cloveIngredientRegex)) {
+        return { unit: null, ingredientStringWithoutQuantityAndUnit };
+    }
+
+    //Next check if the unit is 'bag', 'box', 'can', or 'package'
     //TODO: Find better regex for units like 'bunches' amd 'dashes'. Currently /bunche?s?/ but this is not correct because it matches 'bunche'.
     const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?\.?)\b/i
     const packageMatch = ingredientString.match(packageRegex);
