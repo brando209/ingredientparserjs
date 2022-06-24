@@ -3,6 +3,7 @@ const preparedStates = [
     'diced',
     'grated',
     'ground',
+    'julienned',
     'minced',
     'peeled',
     'sliced',
@@ -14,6 +15,7 @@ const preparedAdjectives = [
     'finely',
     'roughly',
     'thinly',
+    'freshly'
 ]
 
 const preparedRegex = new RegExp(`^((?:${preparedAdjectives.join('|')})?\\s*(?:${preparedStates.join('|')})),?\\s+`, 'i');
