@@ -23,7 +23,7 @@ This function accepts one string argument and returns an object with the propert
 | name  | `string` \| `[string]` | The name of the ingredient. This will be a string array if the ingredient includes alternates. In this case, `hasAlternateIngredients` will be `true`.
 | measurement | `object` \| `[object]` \| `null` | An object describing the measurement of the ingredient, if any. This will be an object array if the measurement is two or more measurements added together. In this case, `hasAddedMeasurements` will be `true`.
 | convertedMeasurement | `object` \| `null` | An object describing the converted measurement of the ingredient, if any. Currently, a converted measurement is simply extracted from the string and not calculated or verified to be a correct conversion.
-| hasAlternateIngredients | `boolean` | A boolean describing if the ingredient is a list
+| hasAlternativeIngredients | `boolean` | A boolean describing if the ingredient is a list
 | hasAddedMeasurements | `boolean` | A boolean describing if the measurement is two or more measurements added together.
 | additional | `string` \| `null` | Any additional information in the input not assumed to be the ingredient name or measurement. Each piece of the input that is considered "additional" with be concatenated using a comma as a seperator.
 
