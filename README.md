@@ -247,5 +247,9 @@ As of version 1.2.0, the parser has support for inputs containing the following:
 
 Patch 1.2.1 addresses issues [#1](https://github.com/brando209/ingredientparserjs/issues/1) and [#2](https://github.com/brando209/ingredientparserjs/issues/2).
 
+## Updates for patch 1.2.2
+
+Patch 1.2.2 addresses issues [#3](https://github.com/brando209/ingredientparserjs/issues/3) and [#4](https://github.com/brando209/ingredientparserjs/issues/4).
+
 ## Contributing
 Found a bug? Please take the time to submit an issue [here](https://github.com/brando209/ingredientparserjs/issues). Have a bit more time than that? Track the bug down, fix it, then submit a pull request [here](https://github.com/brando209/ingredientparserjs/pulls). Alternately, if you just want to help improve the ingredient parser by recommending an improvement or a new feature, you can do that [here](https://github.com/brando209/ingredientparserjs/issues) as well. All help is greatly appreciated!  
