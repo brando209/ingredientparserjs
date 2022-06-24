@@ -1,5 +1,6 @@
 const { unitMap, pluralUnitMap } = require('./src/units');
 const { toNumberFromString, convertUnicodeFractions } = require('./src/utils');
+const { preparedRegex } = require('./src/prep');
 
 //Pre-process string
 function preprocess(string) {
@@ -115,7 +116,7 @@ function extractAddedMeasurement(ingredientString) {
 }
 
 function extractConversion(ingredientString) {
-    const conversionRegex = /^(\(|\/)\s*(?:\s*about\s+)?(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?)(\)?)/;
+    const conversionRegex = /^(\(|\/)\s*(?:\s*about\s+)?(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?|small|sm\.?|medium|med\.?|large|lg\.?)\b(\)?)/;
     let conversion = {
         quantity: null,
         isRange: false,
@@ -160,8 +161,6 @@ function extractMeasurement(ingredientString) {
         unitPlural: null
     };
 
-    ingredientString = preprocess(ingredientString);
-
     //Extract quantity
     let { quantity, isRange, ingredientStringWithoutQuantity } = extractQuantity(ingredientString);
     measurement.quantity = quantity;
@@ -194,7 +193,12 @@ function extractName(ingredientString) {
     const seperationRegex = /(?<=,?\s+or(?:\s+\w+)+),\s+|(?<!\s+or\s+),\s+(?!(?:\w+,?\s+)*or\s+)/;
     //Matches any words within parenthesis(unless special characters other than [`~!@#$%\^&*-_=+\\;:'",<.>/?] are present)
     const parenRegex = /(?<=\()(?:\s*\w*[`~!@#$%\^&*-_=+\\;:'",<\.>/?]*)*(?=\))/;
+    let prepared = [];
     let additionalDetails = [];
+
+    [prepared, ingredientString] = extractPrepared(ingredientString);
+    for(let prep of prepared) additionalDetails.push(prep);
+
     let parenMatch = ingredientString.match(parenRegex);
     while(parenMatch) {
         //If the section of the string within parenthesis starts with 'or', assume it to be an alternate ingredient(or list).
@@ -225,6 +229,19 @@ function extractName(ingredientString) {
     return [alternatives.length === 1 ? alternatives[0] : alternatives, alternatives.length > 1, additionalString]
 }
 
+function extractPrepared(ingredientString) {
+    const prepared = [];
+    
+    let match = ingredientString.match(preparedRegex);
+    while(match) {
+        prepared.push(match[1]);
+        ingredientString = ingredientString.slice(match.index + match[0].length);
+        match = ingredientString.match(preparedRegex);
+    }
+
+    return [prepared, ingredientString]
+}
+
 function parse(ingredientString) {
     const result = {
         name: null,
@@ -234,6 +251,8 @@ function parse(ingredientString) {
         hasAddedMeasurements: false,
         additional: null
     }
+
+    ingredientString = preprocess(ingredientString);
 
     const [[measurement, converted], hasAddedMeasurements, restOfIngredientString] = extractMeasurement(ingredientString);
     result.measurement = measurement;
