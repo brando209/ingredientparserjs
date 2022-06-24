@@ -4,10 +4,13 @@ test('Returns an object with the correct properties', () => {
     const result = parse('1 cup water');
     expect(result).toHaveProperty('name');
     expect(result).toHaveProperty('measurement');
-    expect(result).toHaveProperty('additional');
     expect(result).toHaveProperty('measurement.quantity');
     expect(result).toHaveProperty('measurement.unit');
     expect(result).toHaveProperty('measurement.isRange');
+    expect(result).toHaveProperty('convertedMeasurement');
+    expect(result).toHaveProperty('hasAlternativeIngredients');
+    expect(result).toHaveProperty('hasAddedMeasurements');
+    expect(result).toHaveProperty('additional');
 });
 
 describe('Correctly extracts the ingredient measurements', () => {
@@ -400,6 +403,17 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 package (120g) of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', unitPlural: 'grams', isRange: false });
             expect(parse('1 (120g) package of yeast').convertedMeasurement).toEqual({ quantity: 120, unit: 'gram', unitPlural: 'grams', isRange: false });
         })
+        test('Converted measurement has unit of "small", "medium", or "large"', () => {
+            expect(parse('1 cup (2 small) diced potatoes').convertedMeasurement).toEqual({ quantity: 2, unit: 'small', unitPlural: null, isRange: false })
+            expect(parse('1 cup (2 sm) diced potatoes').convertedMeasurement).toEqual({ quantity: 2, unit: 'small', unitPlural: null, isRange: false })
+            expect(parse('1 cup (2 sm.) diced potatoes').convertedMeasurement).toEqual({ quantity: 2, unit: 'small', unitPlural: null, isRange: false })
+            expect(parse('6 cups (6 medium) sliced apples').convertedMeasurement).toEqual({ quantity: 6, unit: 'medium', unitPlural: null, isRange: false })
+            expect(parse('6 cups (6 med) sliced apples').convertedMeasurement).toEqual({ quantity: 6, unit: 'medium', unitPlural: null, isRange: false })
+            expect(parse('6 cups (6 med.) sliced apples').convertedMeasurement).toEqual({ quantity: 6, unit: 'medium', unitPlural: null, isRange: false })
+            expect(parse('2 cups (2 large) bananas').convertedMeasurement).toEqual({ quantity: 2, unit: 'large', unitPlural: null, isRange: false })
+            expect(parse('2 cups (2 lg) bananas').convertedMeasurement).toEqual({ quantity: 2, unit: 'large', unitPlural: null, isRange: false })
+            expect(parse('2 cups (2 lg.) bananas').convertedMeasurement).toEqual({ quantity: 2, unit: 'large', unitPlural: null, isRange: false })
+        });
     });
 
     describe('Measurement plus other measurements', () => {
@@ -450,7 +464,7 @@ describe('Correctly extracts the ingredient measurements', () => {
         });
     });
 
-    describe('No quantity and/or unit present in input', () => {
+    describe('No measurement or no unit present in input', () => {
         test('Measurement is not present', () => {
             expect(parse('salt').measurement).toBe(null);
             expect(parse('salt').convertedMeasurement).toBe(null);
@@ -459,7 +473,6 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('1 onion')).toHaveProperty('measurement.quantity', 1);
             expect(parse('1 onion')).toHaveProperty('measurement.unit', null);
         });
-        // TODO: test('Unit with no quantity?', () => {});
     });
 });
 
@@ -474,6 +487,12 @@ describe('Correctly extracts the ingredient name', () => {
         expect(parse('1 cup of fried rice')).toHaveProperty('name', 'fried rice');
         expect(parse('1 ounce of shrimp')).toHaveProperty('name', 'shrimp');
     });
+    test('Ingredient name is "clove"', () => {
+        expect(parse('2-3 cloves')).toHaveProperty('name', 'cloves');
+        expect(parse('2-3 whole cloves')).toHaveProperty('name', 'cloves');
+        expect(parse('2 tbsp whole clove')).toHaveProperty('name', 'clove');
+        expect(parse('2 tbsp ground clove')).toHaveProperty('name', 'clove');
+    })
     test('Contains alternate ingredients', () => {
         expect(parse('1 tbsp butter or margarine').hasAlternativeIngredients).toBe(true);
         expect(parse('1 tbsp butter or margarine').name[0]).toBe('butter');
@@ -521,11 +540,17 @@ describe('Correctly extracts any additional information', () => {
         expect(parse('1 teaspoon espresso powder (homemade or store-bought)').hasAlternativeIngredients).toBe(false);
         expect(parse('1 teaspoon espresso powder (homemade or store-bought)').additional).toBe('homemade or store-bought');
 
-        expect(parse("1 tsp oil (it's okay to use any oil or none at all)").hasAlternativeIngredients).toBe(false);
-        expect(parse("1 tsp oil (it's okay to use any oil or none at all)").additional).toBe("it's okay to use any oil or none at all");
+        expect(parse("1 tsp oil (it's okay to use any oil)").hasAlternativeIngredients).toBe(false);
+        expect(parse("1 tsp oil (it's okay to use any oil)").additional).toBe("it's okay to use any oil");
 
         expect(parse("1 slice of pizza (one topping) (cheese, pepperoni, or sausage is the best!)").hasAlternativeIngredients).toBe(false);
         expect(parse("1 slice of pizza (one topping) (cheese, pepperoni, or sausage is the best!)").additional).toBe("one topping, cheese, pepperoni, or sausage is the best!");
+    });
+    test('Additional information before the ingredient name', () => {
+        expect(parse('1 chopped onion').additional).toBe('chopped');
+        expect(parse('1 finely chopped onion').additional).toBe('finely chopped');
+        expect(parse('1 thinly sliced, peeled apple').additional).toBe('thinly sliced, peeled');
+        expect(parse('1 tablespoon coarsly ground black pepper').additional).toBe('coarsly ground');
     });
     test('Multiple additional information', () => {
         expect(parse('1 (very ripe) tomato, thinly sliced')).toHaveProperty('additional', 'very ripe, thinly sliced');
@@ -534,5 +559,4 @@ describe('Correctly extracts any additional information', () => {
         expect(parse('1 (very ripe) tomato (thinly sliced, optional)')).toHaveProperty('additional', 'very ripe, thinly sliced, optional');
         expect(parse('1 (very ripe) tomato (thinly sliced), optional')).toHaveProperty('additional', 'very ripe, thinly sliced, optional');
     });
-    //TODO: test('Additional information before ingredient name', () => {});
 });
