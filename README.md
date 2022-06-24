@@ -33,6 +33,7 @@ The properties `measurement` and `convertedMeasurement` will be `null` if no mea
 | :--- | :--- | :--- |
 | quantity | `number` \| `[number]` \| `null` | The quantity of the ingredient measurement, if any. If the quantity is a range, this will be a number array containing exactly two elements. The minimum of this range will be contained in `quantity[0]` and the maximum will be contained in `quantity[1]`. In this case, `isRange` will be `true`.
 | unit | `string` \| `null` | The unit of measurement, if any. This will contain the singular long form of the unit of measurement. For example, if the input contains the unit 'ounces" or "oz.", this property will contain the string 'ounce'.
+| unitPlural | `string` \| `null` | The plural form of the unit of measurement, if any.
 | isRange | `boolean` | A boolean describing if the measurement quantity is a range.
 
 ### Example: Simple
@@ -60,7 +61,7 @@ will return:
 ```
 {
   name: 'salt',
-  measurement: { quantity: 1, isRange: false, unit: 'tablespoon' },
+  measurement: { quantity: 1, isRange: false, unit: 'tablespoon', unitPlural: 'tablespoons' },
   convertedMeasurement: null,
   hasAlternativeIngredients: false,
   hasAddedMeasurements: false,
@@ -80,7 +81,7 @@ will return:
 ```
 {
   name: 'salt',
-  measurement: { quantity: [ 1, 2 ], isRange: true, unit: 'tablespoon' },
+  measurement: { quantity: [ 1, 2 ], isRange: true, unit: 'tablespoon', unitPlural: 'tablespoons' },
   convertedMeasurement: null,
   hasAlternativeIngredients: false,
   hasAddedMeasurements: false,
@@ -98,8 +99,8 @@ will return:
 ```
 {
   name: 'salt',
-  measurement: { quantity: 1, isRange: false, unit: 'ounce' },
-  convertedMeasurement: { quantity: 28, isRange: false, unit: 'gram' },
+  measurement: { quantity: 1, isRange: false, unit: 'ounce', unitPlural: 'ounces' },
+  convertedMeasurement: { quantity: 28, isRange: false, unit: 'gram', unitPlural: 'grams' },
   hasAlternativeIngredients: false,
   hasAddedMeasurements: false,
   additional: null
@@ -115,8 +116,8 @@ will return:
 ```
 {
   name: 'tomato paste',
-  measurement: { quantity: 1, isRange: false, unit: 'can' },
-  convertedMeasurement: { quantity: 8, isRange: false, unit: 'ounce' },
+  measurement: { quantity: 1, isRange: false, unit: 'can', unitPlural: 'cans' },
+  convertedMeasurement: { quantity: 8, isRange: false, unit: 'ounce', unitPlural: 'ounces' },
   hasAlternativeIngredients: false,
   hasAddedMeasurements: false,
   additional: null
@@ -131,7 +132,7 @@ will return:
 ```
 {
   name: 'tomato paste',
-  measurement: { quantity: 1, isRange: false, unit: 'can' },
+  measurement: { quantity: 1, isRange: false, unit: 'can', unitPlural: 'cans' },
   convertedMeasurement: null,
   hasAlternativeIngredients: false,
   hasAddedMeasurements: false,
@@ -148,7 +149,7 @@ will return:
 ```
 {
   name: [ 'butter', 'margarine' ],
-  measurement: { quantity: 4, isRange: false, unit: 'tablespoon' },
+  measurement: { quantity: 4, isRange: false, unit: 'tablespoon', unitPlural: 'tablespoons' },
   convertedMeasurement: null,
   hasAlternativeIngredients: true,
   hasAddedMeasurements: false,
@@ -165,7 +166,7 @@ will return:
 ```
 {
   name: [ 'rice vinegar', 'apple cider vinegar', 'white vinegar' ],
-  measurement: { quantity: 2, isRange: false, unit: 'tablespoon' },
+  measurement: { quantity: 2, isRange: false, unit: 'tablespoon', unitPlural: 'tablespoons' },
   convertedMeasurement: null,
   hasAlternativeIngredients: true,
   hasAddedMeasurements: false,
@@ -183,7 +184,7 @@ will return:
 ```
 {
   name: [ 'milk', 'buttermilk', 'almond milk', 'coconut milk' ],
-  measurement: { quantity: 1, isRange: false, unit: 'cup' },
+  measurement: { quantity: 1, isRange: false, unit: 'cup', unitPlural: 'cups' },
   convertedMeasurement: null,
   hasAlternativeIngredients: true,
   hasAddedMeasurements: false,
@@ -201,8 +202,8 @@ will return:
 {
   name: 'vegetable oil',
   measurement: [
-    { quantity: 3, isRange: false, unit: 'tablespoon' },
-    { quantity: 2, isRange: false, unit: 'teaspoon' }
+    { quantity: 3, isRange: false, unit: 'tablespoon', unitPlural: 'tablespoons' },
+    { quantity: 2, isRange: false, unit: 'teaspoon', unitPlural: 'teaspoons' }
   ],
   convertedMeasurement: null,
   hasAlternativeIngredients: false,
@@ -220,10 +221,10 @@ will return:
 {
   name: [ 'avacado oil', 'olive oil' ],
   measurement: [
-    { quantity: 3, isRange: false, unit: 'tablespoon' },
-    { quantity: 2, isRange: false, unit: 'teaspoon' }
+    { quantity: 3, isRange: false, unit: 'tablespoon', unitPlural: 'tablespoons' },
+    { quantity: 2, isRange: false, unit: 'teaspoon', unitPlural: 'teaspoons' }
   ],
-  convertedMeasurement: { quantity: 0.25, isRange: false, unit: 'cup' },
+  convertedMeasurement: { quantity: 0.25, isRange: false, unit: 'cup', unitPlural: 'cups' },
   hasAlternativeIngredients: true,
   hasAddedMeasurements: true,
   additional: 'extra virgin, optional'
@@ -252,4 +253,4 @@ Patch 1.2.1 addresses issues [#1](https://github.com/brando209/ingredientparserj
 Patch 1.2.2 addresses issues [#3](https://github.com/brando209/ingredientparserjs/issues/3) and [#4](https://github.com/brando209/ingredientparserjs/issues/4).
 
 ## Contributing
-Found a bug? Please take the time to submit an issue [here](https://github.com/brando209/ingredientparserjs/issues). Have a bit more time than that? Track the bug down, fix it, then submit a pull request [here](https://github.com/brando209/ingredientparserjs/pulls). Alternately, if you just want to help improve the ingredient parser by recommending an improvement or a new feature, you can do that [here](https://github.com/brando209/ingredientparserjs/issues) as well. All help is greatly appreciated!  
+Found a bug? Please take the time to submit an issue [here](https://github.com/brando209/ingredientparserjs/issues). Have a bit more time than that? Track the bug down, fix it, then submit a pull request [here](https://github.com/brando209/ingredientparserjs/pulls). Alternately, if you just want to help improve the ingredient parser by recommending an improvement or a new feature, you can do that [here](https://github.com/brando209/ingredientparserjs/issues) as well. All help is greatly appreciated!
