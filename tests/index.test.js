@@ -104,6 +104,25 @@ describe('Correctly extracts the ingredient measurements', () => {
             expect(parse('⅑ cup cheese')).toHaveProperty('measurement.quantity', 0.111);
             expect(parse('⅒ cup cheese')).toHaveProperty('measurement.quantity', 0.1);
         });
+
+        test('Quantity as a "vulgar" html entity', () => {
+            expect(parse('&frac12; cup cheese')).toHaveProperty('measurement.quantity', 0.5);
+            expect(parse('&frac13; cup cheese')).toHaveProperty('measurement.quantity', 0.333);
+            expect(parse('&frac14; cup cheese')).toHaveProperty('measurement.quantity', 0.25);
+            expect(parse('&frac15; cup cheese')).toHaveProperty('measurement.quantity', 0.2);
+            expect(parse('&frac16; cup cheese')).toHaveProperty('measurement.quantity', 0.167);
+            expect(parse('&frac17; cup cheese')).toHaveProperty('measurement.quantity', 0.143);
+            expect(parse('&frac18; cup cheese')).toHaveProperty('measurement.quantity', 0.125);
+            expect(parse('&frac23; cup cheese')).toHaveProperty('measurement.quantity', 0.667);
+            expect(parse('&frac25; cup cheese')).toHaveProperty('measurement.quantity', 0.4);
+            expect(parse('&frac34; cup cheese')).toHaveProperty('measurement.quantity', 0.75);
+            expect(parse('&frac35; cup cheese')).toHaveProperty('measurement.quantity', 0.6);
+            expect(parse('&frac38; cup cheese')).toHaveProperty('measurement.quantity', 0.375);
+            expect(parse('&frac45; cup cheese')).toHaveProperty('measurement.quantity', 0.8);
+            expect(parse('&frac56; cup cheese')).toHaveProperty('measurement.quantity', 0.833);
+            expect(parse('&frac58; cup cheese')).toHaveProperty('measurement.quantity', 0.625);
+            expect(parse('&frac78; cup cheese')).toHaveProperty('measurement.quantity', 0.875);
+        })
     });
 
     describe('Unit', () => {
