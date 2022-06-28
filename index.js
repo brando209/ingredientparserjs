@@ -123,7 +123,7 @@ function extractAddedMeasurement(ingredientString) {
 }
 
 function extractConversion(ingredientString) {
-    const conversionRegex = /^(\(|\/)\s*(?:\s*about\s+)?(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c\.?|cloves?|centimeters?|cm\.?|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz\.?|foot|ft\.?|feet|heads?|gallons?|gals?\.?|inche?s?|in\.?|ounces?|oz\.?|pints?|pts?\.?|pounds?|lbs?\.?|quarts?|qts?\.?|tablespoons?|tbsp?n?s?\.?|teaspoons?|tspn?s?\.?|grams?|g\.?|kilograms?|kgs?\.?|liters?|lt?\.?|milligrams?|mgs?\.?|milliliters?|mls?\.?|pieces?|pcs?\.?|pinche?s?|slices?|sticks?|sprigs?|small|sm\.?|medium|med\.?|large|lg\.?)\b(\)?)/;
+    const conversionRegex = /^(\(|\/)\s*(?:\s*about\s+)?(\d+\.?\d*)\s*(\-|to)*\s*(\d+\.?\d*)*\s*(cups?|c|cloves?|centimeters?|cm|crowns?|dashe?s?|drops?|ears?|fluid\s*ounces?|fl\.?\s*ounces?|fl\.?\s*oz|foot|ft|feet|heads?|gallons?|gals?|inche?s?|in|ounces?|oz|pints?|pts?|pounds?|lbs?|quarts?|qts?|tablespoons?|tbsp?n?s?|teaspoons?|tspn?s?|grams?|g|kilograms?|kgs?|liters?|lt?|milligrams?|mgs?|milliliters?|mls?|pieces?|pcs?|pinche?s?|slices?|sticks?|sprigs?|small|sm|medium|med|large|lg)\b(\.?\)?)/;
     let conversion = {
         quantity: null,
         isRange: false,
