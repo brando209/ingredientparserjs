@@ -72,9 +72,9 @@ function extractUnit(ingredientString) {
         return { unit: null, ingredientStringWithoutQuantityAndUnit };
     }
 
-    //Next check if the unit is 'bag', 'box', 'can', or 'package'
+    //Next check if the unit is 'bag', 'box', 'can', or 'package'; not within parenthesis.
     //TODO: Find better regex for units like 'bunches' amd 'dashes'. Currently /bunche?s?/ but this is not correct because it matches 'bunche'.
-    const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?\.?)\b/i
+    const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?\.?)\b(?![^\(]*\))/i
     const packageMatch = ingredientString.match(packageRegex);
     if(packageMatch) {
         ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.slice(0, packageMatch.index).trim() + ingredientStringWithoutQuantityAndUnit.slice(packageMatch.index + packageMatch[0].length).trim();
