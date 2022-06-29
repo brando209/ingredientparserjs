@@ -15,7 +15,7 @@ function preprocess(string) {
     //remove the 'and' or '&'. Ex: '1 & 1/2 cups' becomes '1 1/2 cups'
     string = string.replace(/(?<=\d+)(\s*(and|&)\s*)(?=\d+\/\d+)/g, " ");
     //If there is a slash contained between two digits, assume it is a fraction and convert to a decimal
-    string = string.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => ((whole ? toNumberFromString(whole) : " ") + toNumberFromString(frac)));
+    string = string.replace(/(\d*)\s*(\d+\/\d+)/g, (match, whole, frac) => ((whole ? toNumberFromString(whole) : "") + toNumberFromString(frac)));
     //If there are multiple consecutive spaces, converge to single space
     string = string.replaceAll(/\s{2,}/g, " ");
     //If there is a comma seperated list, ensure there is a space after each comma
@@ -74,7 +74,7 @@ function extractUnit(ingredientString) {
 
     //Next check if the unit is 'bag', 'box', 'can', or 'package'; not within parenthesis.
     //TODO: Find better regex for units like 'bunches' amd 'dashes'. Currently /bunche?s?/ but this is not correct because it matches 'bunche'.
-    const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?\.?)\b(?![^\(]*\))/i
+    const packageRegex = /\b(bags?|boxe?s?|bunche?s?|cans?|cartons?|containers?|packs?|packages?|pkgs?)\b\.?(?![^\(]*\))/i
     const packageMatch = ingredientString.match(packageRegex);
     if(packageMatch) {
         ingredientStringWithoutQuantityAndUnit = ingredientStringWithoutQuantityAndUnit.slice(0, packageMatch.index).trim() + ingredientStringWithoutQuantityAndUnit.slice(packageMatch.index + packageMatch[0].length).trim();
@@ -137,7 +137,7 @@ function extractConversion(ingredientString) {
 
     if(conversionMatch) {
         const minQuantity = toNumberFromString(conversionMatch[2]);
-        const hasRange = conversionMatch[3];
+        const hasRange = conversionMatch[3] && conversionMatch[4];
         const maxQuantity = conversionMatch[4] ? toNumberFromString(conversionMatch[4]) : minQuantity;
         //Length of converted measurement quantity portion of string
         conversionStringLength = conversionMatch[0].length;
@@ -226,7 +226,7 @@ function extractName(ingredientString) {
 
     const [ingredients, extra] = ingredientString.split(seperationRegex);
     const alternatives = ingredients.split(/(?:,?\s+or\s+)|,\s+/).map(alt => alt.trim());
-    extra && additionalDetails.push(extra);
+    extra && additionalDetails.push(extra.trim());
 
     const additionalString = additionalDetails.length > 0 ? additionalDetails.join(', ') : null;
 
