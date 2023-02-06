@@ -8,6 +8,13 @@ const preparedStates = [
     'peeled',
     'sliced',
     'whole',
+    'shredded',
+    'dried',
+    'cooked',
+    'uncooked',
+    'julienned',
+    'softened',
+    'cubed',
 ]
 
 const preparedAdjectives = [
